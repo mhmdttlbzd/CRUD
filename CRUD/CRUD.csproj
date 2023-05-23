@@ -43,6 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NewFolder1\Class1.cs" />
+    <Compile Include="NewFolder1\CodeFile1.cs" />
+    <Compile Include="NewFolder1\Interface1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

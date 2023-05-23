@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CRUD
+namespace CRUD.NewFolder1
 {
-    internal class Program
+    internal class Class1
     {
-        static void Main(string[] args)
-        {
-
-        }
     }
 }
