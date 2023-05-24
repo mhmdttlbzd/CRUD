@@ -12,5 +12,7 @@ namespace CRUD.models
         public string Name { get; set; }
         public double Mobile { get; set; }
         public DateTime bornDate { get; set; }
+
     }
+
 }

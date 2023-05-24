@@ -13,19 +13,28 @@ using System.Threading.Tasks;
 
 namespace CRUD.repository
 {
-    internal class Repository
+    public class Repository
     {
         private List<User> users;
         public Repository()
         {
-            using (var reader = new StreamReader("..\\..\\filePersons.csv"))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            try 
             {
-                var records = csv.GetRecords<User>();
-                users = records.OrderBy(x => x.Id).ToList();
+                using (var reader = new StreamReader("..\\..\\FileDataStorage.csv"))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    var records = csv.GetRecords<User>();
+                    users = records.OrderBy(x => x.Id).ToList();
+                }
             }
+            catch
+            {
+                FileStream f = new FileStream("e:..\\..\\FileDataStorage.csv", FileMode.Create);
+                f.Close();
+            }
+
         }
-        public List<User> Create(string name, double mobile, string bornDate)
+        public bool Create(string name, double mobile, string bornDate)
         {
             if (Convert.ToDateTime(bornDate) < DateTime.Now)
             {
@@ -33,19 +42,87 @@ namespace CRUD.repository
                 user.Name = name;
                 user.Mobile = mobile;
                 user.bornDate = Convert.ToDateTime(bornDate).Date;
-                user.Id = 1 + users.Last().Id;
+                if (users.Count()==0)
+                {
+                    user.Id = 1;
+                }
+                else
+                {
+                    user.Id = 1 + users.Last().Id;
+                }
                 users.Add(user);
                 WriteToCVR(users);
-                return users;
+                return true;
             }
             else
             {
-                throw new Exception("bord date is not corect");
+                throw new Exception("born date is not corect");
             }
         }
-        public void WriteToCVR(List<User> users)
+        public List<string> GetUsers()
         {
-            using (var writer = new StreamWriter("..\\..\\filePersons.csv"))
+            List<string> showUsers = new List<string>();
+            foreach (var user in users)
+            {
+                showUsers.Add(user.Id.ToString()+ " : "+ user.Name+" - "+user.Mobile.ToString() + " - "+ user.bornDate.ToString());
+            }
+            return showUsers;
+        }
+        public bool RemoveById(int id)
+        {
+            if (users.Count()!=0)
+            {
+                foreach (User u in users)
+                {
+                    if (u.Id == id)
+                    {
+                        users.Remove(u); break;
+                    }
+                }
+                WriteToCVR(users);
+                return true;
+            }
+            return false;
+        }
+        public int usersLenght()
+        {
+            return users.Last().Id;
+        }
+        public bool EditUser(int id , int num ,string edited)
+        {
+            if (users.Count() != 0)
+            {
+                try
+                {
+                    foreach (User user in users)
+                    {
+                        if (user.Id == id)
+                        {
+                            switch (num)
+                            {
+                                case 1:
+                                    user.Name = edited;
+                                    return true;
+                                case 2:
+                                    user.Mobile = Convert.ToDouble(edited);
+                                    return true;
+                                case 3:
+                                    user.bornDate = Convert.ToDateTime(edited);
+                                    return true;
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    throw new Exception("the number is not corect");
+                }
+            }
+            return false;
+        }
+        private void WriteToCVR(List<User> users)
+        {
+            using (var writer = new StreamWriter("..\\..\\FileDataStorage.csv"))
             using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
             {
                 csv.WriteRecords(users);
