@@ -33,7 +33,7 @@ namespace CRUD.repository
                 user.Name = name;
                 user.Mobile = mobile;
                 user.bornDate = Convert.ToDateTime(bornDate).Date;
-                user.Id = 1;
+                user.Id = 1 + users.Last().Id;
                 users.Add(user);
                 WriteToCVR(users);
                 return users;
